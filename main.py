@@ -13,7 +13,6 @@ def window():
     win = GANimeUI()
     win.show()
     sys.exit(app.exec_())
-    print()
 
 
 window()
