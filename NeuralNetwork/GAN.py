@@ -92,7 +92,7 @@ def train_gan(g_model, d_model, gan_model, dataset, image_shape, latent_dim,
         d1 = 0
         d2 = 0
         d3 = 0
-        if e % 10 == 0:
+        if e % 200 == 0:
             predict_model(gan_model, current_index=e)
         for b in range(bat_per_epo):
             # 1. sample real image
@@ -186,6 +186,7 @@ def show_images_debug(image_array, current_index):
 
     plt.tight_layout()
     plt.savefig("../test/test_" + str(current_index) + ".png")
+    plt.close(fig)
 
 
 def show_training_loss_image(data1, data2, data3):
@@ -209,7 +210,7 @@ def predict_model(model, current_index=0):
 
 
 latent_dim = 100
-epoch = 1000
+epoch = 10000
 batch_size = 512
 image_shape = (64, 64, 3)
 
@@ -227,7 +228,7 @@ dataset = load_dataset(image_path)
 train_gan(ge, di, gan_model, dataset,
           image_shape=image_shape, latent_dim=latent_dim, epoch=epoch, batch_size=batch_size, load_weight=True)
 # gan_model.load_weights("./GAN_model_100.h5")
-predict_model(gan_model, current_index=1)
+# predict_model(gan_model, current_index=1)
 
 
 
