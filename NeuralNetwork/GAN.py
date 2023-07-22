@@ -86,14 +86,14 @@ def train_gan(g_model, d_model, gan_model, dataset, image_shape, latent_dim,
     epoch_loss_g = []
 
     if load_weight is not False:
-        gan_model.load_weights("./GAN_model_100.h5")
+        gan_model.load_weights("./GAN_model.h5")
 
-    for e in range(epoch):
+    for e in range(2001, epoch):
         d1 = 0
         d2 = 0
         d3 = 0
         if e % 200 == 0:
-            predict_model(gan_model, current_index=e)
+            predict_model(g_model, current_index=e)
         for b in range(bat_per_epo):
             # 1. sample real image
             real_x, real_y = get_real_data(dataset, image_shape, half_batch)
@@ -201,7 +201,7 @@ def show_training_loss_image(data1, data2, data3):
     plt.show()
 
 
-def predict_model(model, current_index=0):
+def predict_model(ge, current_index=0, latent_dim=100):
     test_input = get_random_vector((64, latent_dim))
     test_output = ge.predict(test_input)
     # convert image data from range -1 to 1 into 0 to 255
@@ -209,24 +209,44 @@ def predict_model(model, current_index=0):
     show_images_debug(rgb_image, current_index)
 
 
-latent_dim = 100
-epoch = 10000
-batch_size = 512
-image_shape = (64, 64, 3)
+def build_model(image_shape=(64, 64, 3), latent_dim=100):
+    di = gan_discriminator(input_shape=image_shape)
+    ge = gan_generator(latent_dim)
+    gan_model = build_gan(ge, di)
+    gan_model.load_weights("./NeuralNetwork/GAN_model.h5")
+    return ge
 
-di = gan_discriminator(input_shape=image_shape)
-di.summary()
 
-ge = gan_generator(100)
-ge.summary()
+def show_demo(ge, latent_dim=100, count=64):
+    test_input = get_random_vector((count, latent_dim))
+    test_output = ge.predict(test_input)
+    # convert image data from range -1 to 1 into 0 to 255
+    rgb_image = ((test_output + 1) * 127.5).astype(int)
+    return rgb_image
 
-gan_model = build_gan(ge, di)
 
-image_path = "D:\\GAN_anime_profile\\data\\images"
-dataset = load_dataset(image_path)
+def self_train():
+    latent_dim = 100
+    epoch = 2401
+    batch_size = 512
+    image_shape = (64, 64, 3)
 
-train_gan(ge, di, gan_model, dataset,
-          image_shape=image_shape, latent_dim=latent_dim, epoch=epoch, batch_size=batch_size, load_weight=True)
+    di = gan_discriminator(input_shape=image_shape)
+    di.summary()
+
+    ge = gan_generator(latent_dim=latent_dim)
+    ge.summary()
+
+    gan_model = build_gan(ge, di)
+
+    image_path = "D:\\GAN_anime_profile\\data\\images"
+    dataset = load_dataset(image_path)
+
+    train_gan(ge, di, gan_model, dataset,
+              image_shape=image_shape, latent_dim=latent_dim, epoch=epoch, batch_size=batch_size, load_weight=True)
+
+
+self_train()
 # gan_model.load_weights("./GAN_model_100.h5")
 # predict_model(gan_model, current_index=1)
 

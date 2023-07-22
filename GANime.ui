@@ -220,6 +220,9 @@ Size:</string>
       </property>
      </widget>
      <widget class="QWidget" name="widget_2" native="true">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>970</x>
@@ -839,7 +842,7 @@ Size:</string>
         <string>Show Demo</string>
        </property>
       </widget>
-      <widget class="QComboBox" name="comboBox_4">
+      <widget class="QComboBox" name="Model_box">
        <property name="geometry">
         <rect>
          <x>150</x>
@@ -851,6 +854,16 @@ Size:</string>
        <item>
         <property name="text">
          <string>GAN</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>C_GAN</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>CVAE_GAN</string>
         </property>
        </item>
       </widget>
@@ -957,10 +970,61 @@ Size:</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>Model_box</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>GANime</receiver>
+   <slot>model_changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>217</x>
+     <y>441</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>639</x>
+     <y>359</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_7</sender>
+   <signal>clicked()</signal>
+   <receiver>GANime</receiver>
+   <slot>show_model_demo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>162</x>
+     <y>661</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>639</x>
+     <y>359</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>GANime</receiver>
+   <slot>generate_one_random()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>639</x>
+     <y>359</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>preview_change_path_text()</slot>
   <slot>refresh_image_list()</slot>
   <slot>dataset_change(int)</slot>
+  <slot>model_changed(int)</slot>
+  <slot>show_model_demo()</slot>
+  <slot>generate_one_random()</slot>
  </slots>
 </ui>
