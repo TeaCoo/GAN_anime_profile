@@ -1,5 +1,5 @@
 from GANime import Ui_GANime
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.QtCore import QStringListModel
 import sys
 import os
@@ -8,14 +8,17 @@ from PyQt5.QtGui import QPainter, QPixmap, QColor, QImage
 import csv
 from NeuralNetwork import GAN
 import numpy as np
+import tkinter as tk
 
 
 class GANimeUI(QMainWindow, Ui_GANime):
     def __init__(self, parent=None):
         super(GANimeUI, self).__init__(parent)
         self.current_image_path = "data\\images"
+        self.save_path = os.path.join(os.path.dirname(__file__), "save")
         self.model = None
         self.setupUi(self)
+        self.textEdit.setText(self.save_path)
         self.set_current_path_text(os.path.join(os.path.dirname(__file__), self.current_image_path))
         self.AIList.selectionModel().selectionChanged.connect(self.onSelectionChanged)
         self.trainingList.selectionModel().selectionChanged.connect(self.onSelectionChanged)
@@ -26,15 +29,32 @@ class GANimeUI(QMainWindow, Ui_GANime):
         self.get_csv_label()
         self.init_model_ui()
 
-
     def set_current_path_text(self, text):
         self.folder_path.setText(text)
 
     def preview_change_path_text(self):
+        root = tk.Tk()
+        root.withdraw()
         path = askdirectory()
         if path != '':
             self.current_image_path = path
         self.set_current_path_text(self.current_image_path)
+
+    def save_path_text(self):
+        root = tk.Tk()
+        root.withdraw()
+        path = askdirectory()
+        if path != '':
+            self.save_path = path
+        self.textEdit.setText(self.save_path)
+
+    def save_image(self):
+        if self.textEdit_3.toPlainText() == "":
+            filename = "demo.png"
+        else:
+            filename = self.textEdit_3.toPlainText()
+        self.demo_Image.save(os.path.join(self.save_path, filename))
+        show_message_box("Save image", "Save image success")
 
     def refresh_image_list(self):
 
@@ -200,6 +220,14 @@ def numpy_to_qimage(numpy_array):
     qimage = QImage(numpy_array.data, width, height, bytes_per_line, QImage.Format_RGB888)
     return qimage
 
+
+def show_message_box(title, message):
+    msg_box = QMessageBox()
+    msg_box.setIcon(QMessageBox.Information)
+    msg_box.setWindowTitle(title)
+    msg_box.setText(message)
+    msg_box.setStandardButtons(QMessageBox.Ok)
+    msg_box.exec_()
 
 class ImageDetail:
     def __init__(self, name, year, eyes, hair, width, height):

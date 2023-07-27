@@ -88,7 +88,7 @@ def train_gan(g_model, d_model, gan_model, dataset, image_shape, latent_dim,
     if load_weight is not False:
         gan_model.load_weights("./GAN_model.h5")
 
-    for e in range(2001, epoch):
+    for e in range(5001, epoch):
         d1 = 0
         d2 = 0
         d3 = 0
@@ -112,14 +112,15 @@ def train_gan(g_model, d_model, gan_model, dataset, image_shape, latent_dim,
             # 5. train generator
             g_loss = gan_model.train_on_batch(gan_x, gan_y)
 
-            # 6. save model's weight
-            gan_model.save("./GAN_model.h5")
             print("Epoch[", e, "/", epoch, "]",
                   "Batch[", b, "/", bat_per_epo,
                   "]  d_loss_true=", d_loss_true, " d_loss_fake=", d_loss_fake, " g_loss=", g_loss)
             d1 += d_loss_true
             d2 += d_loss_fake
             d3 += g_loss
+        # 6. save model's weight
+        gan_model.save("./GAN_model.h5")
+
         epoch_loss_d1.append(d1/bat_per_epo)
         epoch_loss_d2.append(d2/bat_per_epo)
         epoch_loss_g.append(d3/bat_per_epo)
@@ -227,7 +228,7 @@ def show_demo(ge, latent_dim=100, count=64):
 
 def self_train():
     latent_dim = 100
-    epoch = 2401
+    epoch = 5401
     batch_size = 512
     image_shape = (64, 64, 3)
 
